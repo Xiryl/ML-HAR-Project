@@ -1,5 +1,5 @@
 from utils import FileUtils, Preprocessing
-
+from classifiers import svm
 
 def run():
     df_train, df_test = FileUtils.load_dataset('./data/train.csv', './data/test.csv')
@@ -16,7 +16,8 @@ def run():
 
     # scale data
     x_train_s, x_test_s = Preprocessing.scale_dataset(x_train, x_test, scaler_type='standardscaler')
-    print(y_train_encoded)
+
+    svm.svm(x_train_s, y_train_encoded, x_test_s, y_test_encoded, max_iter=100, kernel='linear')
 
 
 if __name__ == '__main__':

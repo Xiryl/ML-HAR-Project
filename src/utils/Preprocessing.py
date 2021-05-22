@@ -1,5 +1,7 @@
 from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def encode_labels(y_train):
