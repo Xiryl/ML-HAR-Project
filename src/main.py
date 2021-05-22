@@ -17,6 +17,7 @@ def run():
     # scale data
     x_train_s, x_test_s = Preprocessing.scale_dataset(x_train, x_test, scaler_type='standardscaler')
 
+    # run svm
     svm.svm(x_train_s, y_train_encoded, x_test_s, y_test_encoded, max_iter=100, kernel='linear')
 
 
