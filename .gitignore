@@ -130,3 +130,7 @@ dmypy.json
 src/.DS_Store
 src/data/.DS_Store
 .DS_Store
+src/data/WISDM_ar_v1.1_raw.txt
+src/data/WISDM_ar_v1.1_raw_about.txt
+src/data/WISDM_at_v2.0_raw_about.txt
+src/data/WISDM_at_v2.0_raw.txt
