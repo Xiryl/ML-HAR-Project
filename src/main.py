@@ -1,4 +1,4 @@
-from utils import FileUtils, Preprocessing, PrintUtils
+from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
 from classifiers import svm
 import pandas as pd
 from sklearn.manifold import TSNE
@@ -14,6 +14,8 @@ def run(data_treatment):
 
     df_wisdm_v1 = FileUtils.load_dataset("./data/WISDM_ar_v1.1_raw.txt", ",")
     #df_wisdm_v2 = FileUtils.load_dataset("./data/WISDM_at_v2.0_raw.txt", ",")
+
+    # --- Print init stats  ---
     PrintUtils.print_init_stats("WISDM_v1", df_wisdm_v1)
     PrintUtils.plot_count_per_subject(df_wisdm_v1)
     PrintUtils.plot_samplings_per_class(df_wisdm_v1)
@@ -21,7 +23,11 @@ def run(data_treatment):
     PrintUtils.plot_activity("Sitting", df_wisdm_v1)
     PrintUtils.plot_activity("Walking", df_wisdm_v1)
     PrintUtils.plot_activity("Jogging", df_wisdm_v1)
-    PrintUtils.plot_class_distribution(df_wisdm_v1)
+    # -----------------
+
+    # --- Data FFT filtering  ---
+    df_wisdm_v1_filtered = DataCleaning.apply_filter(df_wisdm_v1)
+    # -----------------
 
 
 if __name__ == '__main__':
