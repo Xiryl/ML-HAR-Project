@@ -1,26 +1,36 @@
-from utils import FileUtils, Preprocessing
+from utils import FileUtils, Preprocessing, PrintUtils
 from classifiers import svm
+import pandas as pd
+from sklearn.manifold import TSNE
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+import numpy as np
+import argparse
 
-def run():
-    df_train, df_test = FileUtils.load_dataset('./data/train.csv', './data/test.csv')
 
-    # split data
-    y_train = df_train.Activity
-    x_train = df_train.drop(['subject', 'Activity'], axis=1)
-    y_test = df_test.Activity
-    x_test = df_test.drop(['subject', 'Activity'], axis=1)
+def run(data_treatment):
+    print("Executing using [",data_treatment,"] data treatment type.")
 
-    # encode labels
-    y_train_encoded = Preprocessing.encode_labels(y_train)
-    y_test_encoded = Preprocessing.encode_labels(y_test)
-
-    # scale data
-    x_train_s, x_test_s = Preprocessing.scale_dataset(x_train, x_test, scaler_type='standardscaler')
-
-    # run svm
-    svm.svm(x_train_s, y_train_encoded, x_test_s, y_test_encoded, max_iter=100, kernel='linear')
+    df_wisdm_v1 = FileUtils.load_dataset("./data/WISDM_ar_v1.1_raw.txt", ",")
+    #df_wisdm_v2 = FileUtils.load_dataset("./data/WISDM_at_v2.0_raw.txt", ",")
+    PrintUtils.print_init_stats("WISDM_v1", df_wisdm_v1)
+    PrintUtils.plot_count_per_subject(df_wisdm_v1)
+    PrintUtils.plot_samplings_per_class(df_wisdm_v1)
+    PrintUtils.plot_sampling_per_class_per_user(df_wisdm_v1)
+    PrintUtils.plot_activity("Sitting", df_wisdm_v1)
+    PrintUtils.plot_activity("Walking", df_wisdm_v1)
+    PrintUtils.plot_activity("Jogging", df_wisdm_v1)
+    PrintUtils.plot_class_distribution(df_wisdm_v1)
 
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser(description='ML HAR Project.')
+    parser.add_argument('--data_treatment',
+                        default="feat_extraction",
+                        help='Choose the data treatment type (segmentation, feat_extraction')
+
+    args = parser.parse_args()
+    data_treatment = args.data_treatment
+    run(data_treatment)
 
