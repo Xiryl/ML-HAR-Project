@@ -4,7 +4,12 @@ import numpy as np
 import sensormotion as sm
 
 
-def apply_filter(df):
+def apply_filter(_config, df):
+    filter = _config['DATA_CLEANING']['filter']
+
+    if filter == 'none':
+        return df
+
     b, a = sm.signal.build_filter(frequency=0.1,
                                   sample_rate=20,
                                   filter_type='lowpass',
