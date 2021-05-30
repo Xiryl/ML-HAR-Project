@@ -57,14 +57,14 @@ def run():
 
     # --- Data FFT filtering  ---
     print("\t - Data filtering (noise removal) ...")
-    df_wisdm_v1_filtered = DataCleaning.apply_filter(_config, df_data)
-    df_data = df_wisdm_v1_filtered
+    df_data_filtered = DataCleaning.apply_filter(_config, df_data)
+    df_data = df_data_filtered
     # -----------------
 
     # --- Encode labels  ---
     print("\t - Encoding labels ...")
-    df_wisdm_v1_encoded = Preprocessing.encode_labels(df_data)
-    df_data = df_wisdm_v1_encoded
+    df_data_encoded = Preprocessing.encode_labels(df_data)
+    df_data = df_data_encoded
     # -----------------
 
 
