@@ -96,18 +96,10 @@ def run():
     x_train, x_test = Preprocessing.do_features_selection(_config, x_train, x_test)
     # -----------------
 
-    print(x_train.shape)
-    selector = VarianceThreshold()
-    x_train = selector.fit_transform(x_train)
-    x_test = selector.transform(x_test)
-    print(x_train.shape)
-
-    sampler = RandomUnderSampler()
-
-
-    print(x_train.shape)
-    x_train, y_train = sampler.fit_resample(x_train, y_train)
-    print(x_train.shape)
+    # --- Data Balancing  ---
+    print("\t - Features Selection ...")
+    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
+    # -----------------
 
     print("\t - SVM ...")
     svm.svm(x_train, y_train, x_test, y_test)

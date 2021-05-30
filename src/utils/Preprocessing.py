@@ -1,3 +1,4 @@
+from imblearn.under_sampling import RandomUnderSampler
 from sklearn import preprocessing
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import train_test_split
@@ -113,3 +114,12 @@ def do_features_selection(_config, x_train, x_test):
         return x_train_s, x_test_s
     else:
         return x_train, x_test
+
+
+def do_balancing(_config, x_train, y_train):
+    balancing_technique = _config['BALANCING']['balancing_technique']
+    if balancing_technique == 'under':
+        sampler = RandomUnderSampler()
+        x_train_b, y_train_b = sampler.fit_resample(x_train, y_train)
+        return x_train_b, y_train_b
+
