@@ -1,4 +1,5 @@
 from sklearn import preprocessing
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import tsfel as ts
@@ -101,3 +102,14 @@ def do_train_test_split(_config, df):
     print('\t\t- y_test: ', y_test.shape)
 
     return x_train, x_test, y_train, y_test
+
+
+def do_features_selection(_config, x_train, x_test):
+    feat_sel_type= _config['FEATURES_SELECTION']['feat_sel_type']
+    if feat_sel_type == 'variance':
+        selector = VarianceThreshold()
+        x_train_s = selector.fit_transform(x_train)
+        x_test_s = selector.transform(x_test)
+        return x_train_s, x_test_s
+    else:
+        return x_train, x_test

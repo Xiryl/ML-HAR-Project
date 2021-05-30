@@ -91,6 +91,11 @@ def run():
     x_train, x_test = Preprocessing.scale_dataset(_config, x_train, x_test)
     # -----------------
 
+    # --- Features Selection  ---
+    print("\t - Features Selection ...")
+    x_train, x_test = Preprocessing.do_features_selection(_config, x_train, x_test)
+    # -----------------
+
     print(x_train.shape)
     selector = VarianceThreshold()
     x_train = selector.fit_transform(x_train)
