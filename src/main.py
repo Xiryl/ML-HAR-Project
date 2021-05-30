@@ -101,8 +101,15 @@ def run():
     x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
     # -----------------
 
-    print("\t - SVM ...")
+    # --- Data Balancing  ---
+    print("\t - Features Selection ...")
+    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
+    # -----------------
+
+    # --- Model execution: SVM  ---
+    print("\t - Model execution: SVM ...")
     svm.svm(x_train, y_train, x_test, y_test)
+    # -----------------
 
 
 if __name__ == '__main__':
