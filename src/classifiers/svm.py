@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 
-def svm(x_train, y_train, x_test, y_test, max_iter=100, kernel='linear'):
+def svm(x_train, y_train, x_test, y_test, max_iter=1000, kernel='linear'):
     model = SVC(kernel=kernel, max_iter=max_iter)
     model = train(model, x_train, y_train)
     predicted = predict(model, x_test)

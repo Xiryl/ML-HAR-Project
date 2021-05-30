@@ -9,6 +9,8 @@ def load_dataset(_config):
          file_name = "./data/WISDM_ar_v1.1_raw.txt"
     if dataset_type == 'wisdm2':
         file_name = "./data/WISDM_at_v2.0_raw.txt"
+    if dataset_type == "local_preprocessed":
+        return pd.read_csv("./data/df_feature.csv", sep=",")
 
     columns = ['user', 'activity', 'timestamp', 'x-acc', 'y-acc', 'z-acc']
     df_dataset = pd.read_csv(file_name, sep=",", header=None, names=columns)
@@ -18,3 +20,7 @@ def load_dataset(_config):
     df_dataset['y-acc'] = df_dataset['y-acc'].astype(float)
     df_dataset['z-acc'] = df_dataset['z-acc'].astype(float)
     return df_dataset
+
+
+def save_dataset(df):
+    df.to_csv('./data/df_feature.csv', index=False)
