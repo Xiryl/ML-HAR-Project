@@ -14,7 +14,8 @@ def print_init_stats(name, df):
     print("Has NaN '", name, "':\n", has_nan_values)
 
     activities = df["activity"].unique()
-    print(activities)
+    users = len(df["user"].unique())
+    print("qta subjects in '", name, "':\n", users)
 
 
 # --- Plot functions  ---

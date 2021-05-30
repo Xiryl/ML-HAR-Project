@@ -1,19 +1,16 @@
 from sklearn import preprocessing
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
-def encode_labels(y_train):
-    """
-    @brief Encode labels from string to int
-    :param y_train: train labels
-    :return: encoded labels
-    """
+def encode_labels(df):
+    labels = df["activity"]
     encoder = preprocessing.LabelEncoder()
-    encoder.fit(y_train)
-    y = encoder.transform(y_train)
-    return y
+    encoder.fit(labels)
+    df["activity"] = encoder.transform(labels)
+    return df
 
 
 def scale_dataset(x_train, x_test, scaler_type):
