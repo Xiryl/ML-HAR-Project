@@ -63,8 +63,11 @@ def run():
             PrintUtils.plot_activity("Jogging", df_data)
         # -----------------
 
-        # --- Data FFT filtering  ---
-        print("\t - Data filtering (noise removal) ...")
+        # --- Data Cleaning  ---
+        print("\t - Data cleaning (fix NaN values) ...")
+        df_data = DataCleaning.handle_nan_values(_config, df_data)
+
+        print("\t - Data cleaning (noise removal) ...")
         df_data_filtered = DataCleaning.apply_filter(_config, df_data)
         df_data = df_data_filtered
         # -----------------
