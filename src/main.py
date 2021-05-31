@@ -1,5 +1,7 @@
 from sklearn.feature_selection import VarianceThreshold
 from imblearn.under_sampling import RandomUnderSampler
+from sklearn.preprocessing import MinMaxScaler
+
 from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
 from classifiers import svm
 import pandas as pd
@@ -75,10 +77,10 @@ def run():
 
         # --- Data Treatment  ---
         print("\t - Data Treatment ...")
-        df_feature = Preprocessing.data_treatment(_config, df_data)
+        df_data = Preprocessing.data_treatment(_config, df_data)
 
         print("\t - Save df_feature ...")
-        FileUtils.save_dataset(df_feature)
+        FileUtils.save_dataset(df_data)
         # -----------------
 
     # --- Train/Test Split  ---
@@ -94,11 +96,6 @@ def run():
     # --- Features Selection  ---
     print("\t - Features Selection ...")
     x_train, x_test = Preprocessing.do_features_selection(_config, x_train, x_test)
-    # -----------------
-
-    # --- Data Balancing  ---
-    print("\t - Features Selection ...")
-    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
     # -----------------
 
     # --- Data Balancing  ---

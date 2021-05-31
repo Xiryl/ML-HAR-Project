@@ -66,6 +66,9 @@ def apply_feat_extraction(_config, df):
                                                    overlap=tsfel_overlap,
                                                    verbose=1)
 
+    # Handling eventual missing values from the feature extraction
+    X_features = fill_missing_values_after_feat_extraction(X_features)
+
     Y_features = labels_windowing(y, sampling_frequency, time_window_size, window_overlap)
 
     df_features = pd.DataFrame(X_features)
@@ -73,6 +76,10 @@ def apply_feat_extraction(_config, df):
 
     return df_features
 
+def fill_missing_values_after_feat_extraction(df):
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
+    df.fillna(df.mean(), inplace=True)
+    return df
 
 def labels_windowing(labels, sampling_frequency, time_window, overlap):
     hop_size = time_window - int(sampling_frequency * overlap)

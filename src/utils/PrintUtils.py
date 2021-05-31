@@ -12,6 +12,11 @@ def print_init_stats(name, df):
 
     has_nan_values = df.isnull().values.any()
     print("Has NaN '", name, "':\n", has_nan_values)
+    if has_nan_values:
+        #df.fillna(df.mean(), inplace=True)
+        df.fillna(method='ffill', inplace=True)
+        df = df.reset_index(drop=True)
+        print("after filter has nan:", df.isnull().values.any())
 
     activities = df["activity"].unique()
     users = len(df["user"].unique())
