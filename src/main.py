@@ -3,7 +3,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from sklearn.preprocessing import MinMaxScaler
 
 from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
-from classifiers import svm
+from classifiers import svm, knn
 import pandas as pd
 from sklearn.manifold import TSNE
 import seaborn as sns
@@ -68,18 +68,16 @@ def run():
         df_data = DataCleaning.handle_nan_values(_config, df_data)
 
         print("\t - Data cleaning (noise removal) ...")
-        df_data_filtered = DataCleaning.apply_filter(_config, df_data)
-        df_data = df_data_filtered
+        df_data = DataCleaning.apply_filter(_config, df_data)
         # -----------------
 
         # --- Encode labels  ---
         print("\t - Encoding labels ...")
-        df_data_encoded = Preprocessing.encode_labels(df_data)
-        df_data = df_data_encoded
+        df_data = Preprocessing.encode_labels(df_data)
         # -----------------
 
         # --- Data Treatment  ---
-        print("\t - Data Treatment ...")
+        print("\t - Data Treatment (feat extraction) ...")
         df_data = Preprocessing.data_treatment(_config, df_data)
 
         print("\t - Save df_feature ...")
@@ -102,14 +100,19 @@ def run():
     # -----------------
 
     # --- Data Balancing  ---
-    print("\t - Features Selection ...")
-    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
+    print("\t - Data Balancing ...")
+    #x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
     # -----------------
 
     # --- Model execution: SVM  ---
     print("\t - Model execution: SVM ...")
     svm.svm(x_train, y_train, x_test, y_test)
     # -----------------
+    #
+    # # --- Model execution: KNN  ---
+    # print("\t - Model execution: KNN ...")
+    # knn.knn_gs(x_train, y_train, x_test, y_test)
+    # # -----------------
 
 
 if __name__ == '__main__':

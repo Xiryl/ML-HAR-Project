@@ -1,8 +1,9 @@
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn import preprocessing
-from sklearn.feature_selection import VarianceThreshold
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.feature_selection import VarianceThreshold, SelectFromModel
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 import tsfel as ts
 import warnings
 from scipy import stats
@@ -26,6 +27,9 @@ def scale_dataset(_config, x_train, x_test):
     if norm_type == 'minmax':
         scaler = MinMaxScaler()
 
+    if norm_type == 'robust':
+        scaler = RobustScaler()
+
     x_train_s = scaler.fit_transform(x_train)
     x_test_s = scaler.fit_transform(x_test)
 
@@ -47,7 +51,8 @@ def apply_feat_extraction(_config, df):
     window_overlap = int(_config['DATA_REPRESENTATION']['window_overlap'])
     features_domain = _config['DATA_REPRESENTATION']['features_domain']
 
-    x = df.drop(['activity', 'user', 'timestamp'], axis=1)
+    # x = df.drop(['activity', 'user', 'timestamp'], axis=1)
+    x = df.drop(['activity', 'timestamp'], axis=1)
     y = df['activity']
 
     if features_domain == "all":
@@ -96,6 +101,7 @@ def do_train_test_split(_config, df):
     test_size = float(_config['TRAINING']['test_size'])
     y = df["activity"]
     x = df.drop("activity", axis=1)
+    # todo cambiato df con x,y
     x_train, x_test, y_train, y_test = train_test_split(
         x,
         y,
@@ -120,6 +126,11 @@ def do_features_selection(_config, x_train, x_test):
         x_test_s = selector.transform(x_test)
         return x_train_s, x_test_s
     else:
+        clf = ExtraTreesClassifier(n_estimators=50)
+        clf = clf.fit(x_train, x_test)
+        model = SelectFromModel(clf, prefit=True)
+        x_train = model.fit_transform(x_train)
+        x_test = model.transform(x_test)
         return x_train, x_test
 
 
@@ -129,4 +140,42 @@ def do_balancing(_config, x_train, y_train):
         sampler = RandomUnderSampler()
         x_train_b, y_train_b = sampler.fit_resample(x_train, y_train)
         return x_train_b, y_train_b
+    else:
+        return x_train, y_train
 
+
+# def apply_segmentation(df, sampling_frequency, time_window_size, overlap):
+#
+#     x, y = get_window(df, sampling_frequency, time_window_size, overlap)
+#     p = None
+#
+#     x_df = pd.DataFrame(x.reshape(-1, x.shape[1] * x.shape[2]))
+#     x_df['activity'] = y
+#
+#     return x_df
+#
+#
+# def get_window(df: pd.DataFrame, sampling_frequency: int, window_size: int, overlap: float):
+#     hop_size = window_size - int(sampling_frequency * overlap)
+#
+#     data = list()
+#     labels = list()
+#     patients = list()
+#
+#     x = df.drop(['activity', 'user', 'timestamp'], axis=1)
+#     y = df['activity']
+#
+#     for i in range(0, len(df) - window_size + 1, hop_size):
+#         window = list()
+#         for column in x:
+#             x_i = df[column].values[i: i + window_size]
+#             window.append(x_i)
+#
+#         # Associate a label for the current window based on mode
+#         label = stats.mode(df['activity'].values[i: i + window_size])[0][0]
+#
+#         data.append(np.array(window).T)
+#         labels.append(label)
+#
+#     return np.asarray(data), np.asarray(labels)
+#
