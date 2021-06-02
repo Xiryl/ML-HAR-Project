@@ -5,8 +5,9 @@ import seaborn as sns
 import numpy as np
 from sklearn.model_selection import GridSearchCV
 
-def svm(x_train, y_train, x_test, y_test, max_iter=1000, kernel='linear'):
-    model = SVC(kernel=kernel)
+
+def svm(x_train, y_train, x_test, y_test, kernel='linear', gamma='auto', C=0.1, max_iter=1000):
+    model = SVC(kernel, gamma, C, max_iter)
     model = train(model, x_train, y_train)
     predicted = predict(model, x_test)
     print_cmatrix(predicted, y_test)
@@ -15,22 +16,15 @@ def svm(x_train, y_train, x_test, y_test, max_iter=1000, kernel='linear'):
 
 
 def svm_gs(x_train, y_train, x_test, y_test):
-    # tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
-    #                      'gamma': ['auto', 'scale'],
-    #                      'C': [1, 10, 100, 1000],
-    #                      'max_iter': [300, 500, 1000]}]
-
-    # tuned_parameters = [{'C': [0.01, 0.1, 1, 10],
-    #             'kernel': ['linear', 'poly', 'rbf'],
-    #             'gamma': ['scale', 'auto']}]
-
-    tuned_parameters = [{'C': [0.01],
-                'kernel': ['linear']}]
-
+    tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
+                         'gamma': ['auto', 'scale'],
+                         'C': [1, 10, 100, 1000],
+                         'max_iter': [300, 500, 1000]}]
 
     clf = GridSearchCV(
         SVC(), tuned_parameters, scoring='accuracy'
     )
+
     clf.fit(x_train, y_train)
     print("Best parameters set found on development set:")
     print()
@@ -43,6 +37,7 @@ def svm_gs(x_train, y_train, x_test, y_test):
     print_cmatrix(predicted, y_test)
     stats(predicted, y_test)
     return predicted
+
 
 def train(model, x_train, y_train):
     model.fit(x_train, y_train)

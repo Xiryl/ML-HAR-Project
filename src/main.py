@@ -1,6 +1,6 @@
 import configparser
 
-from classifiers import knn
+from classifiers import MLClassifiers
 from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
 
 _config = configparser.ConfigParser()
@@ -27,7 +27,6 @@ def print_config(_config):
 
 
 def run():
-
     # --- Print running configuration  ---
     print_config(_config)
     # -----------------
@@ -102,14 +101,9 @@ def run():
     x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
     # -----------------
 
-    # # --- Model execution: SVM  ---
-    # print("\t - Model execution: SVM ...")
-    # svm.svm(x_train, y_train, x_test, y_test)
-    # # -----------------
-
-    # --- Model execution: KNN  ---
-    print("\t - Model execution: KNN ...")
-    knn.knn_gs(x_train, y_train, x_test, y_test)
+    # --- Model execution: ML  ---
+    print("\t - Model execution: ML ...")
+    MLClassifiers.run_classifiers(_config, x_train, y_train, x_test, y_test)
     # -----------------
 
 

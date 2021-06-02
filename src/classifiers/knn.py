@@ -7,21 +7,29 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 
 
+def knn(x_train, y_train, x_test, y_test, n_neighbors=1, p=1, metric='euclidean'):
+    model = KNeighborsClassifier(n_neighbors, p, metric)
+    model.fit(x_train, y_train)
+    y_pred = model.predict(x_test)
+
+    print_cmatrix(y_test, y_pred)
+    stats(y_test, y_pred)
+    return
+
+
 def knn_gs(x_train, y_train, x_test, y_test):
     tuned_parameters = [{'n_neighbors': [1, 3, 5],
                 'p': [1, 3, 5],
                 'metric': ['euclidean', 'manhattan']}]
 
-    # tuned_parameters = [{'n_neighbors': [3],
-    #             'p': [1],
-    #             'metric': ['euclidean']}]
-
+    print("\t\t- Params: ", tuned_parameters)
 
     clf = GridSearchCV(
         KNeighborsClassifier(), tuned_parameters, scoring='accuracy'
     )
     clf.fit(x_train, y_train)
-    print("Best parameters set found on development set:")
+
+    print("\t\t- Best parameters set found on development set:")
     print()
     print(clf.best_params_)
 
@@ -46,6 +54,6 @@ def stats(y_test, y_pred):
     prf1 = precision_recall_fscore_support(y_test, y_pred, average='weighted')
     accuracy = accuracy_score(y_test, y_pred, normalize=True)
     print("===== KNN ======")
-    print("-Precision: ", prf1[0].round(2), "\n-Recall:    ", prf1[1].round(2), "\n-F1:        ", prf1[2].round(2))
+    print("-Precision: ", prf1[0].round(2), "\n-Recall:    ", prf1[1].round(2), "\n-F1:        ", prf1[2].round(2), "\n- Accuracy:", accuracy)
     print("================")
     return prf1
