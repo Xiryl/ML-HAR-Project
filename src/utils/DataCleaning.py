@@ -5,6 +5,10 @@ import sensormotion as sm
 
 
 def apply_filter(_config, df):
+    """
+    Do FFT filter to the dataset
+    """
+
     filter = _config['DATA_CLEANING']['filter']
     sampling_frequency = int(_config['DATA_REPRESENTATION']['sampling_frequency'])
     filter_order = int(_config['DATA_CLEANING']['filter_order'])
@@ -37,6 +41,10 @@ def apply_filter(_config, df):
 
 
 def handle_nan_values(_config, df):
+    """
+    Fix NaN values during loading phase of the dataset
+    """
+
     cleaning_method = _config['DATA_CLEANING']['clean_method']
 
     has_nan_values = df.isnull().values.any()
@@ -53,6 +61,6 @@ def handle_nan_values(_config, df):
 
     df = df.reset_index(drop=True)
     if not df.isnull().values.any():
-        print("\t\t- After apply '",cleaning_method,"' the dataset don't have NaN values.")
+        print("\t\t- After apply '", cleaning_method, "' the dataset don't have NaN values.")
 
     return df

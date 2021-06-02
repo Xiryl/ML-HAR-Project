@@ -14,6 +14,9 @@ warnings.filterwarnings("ignore")
 
 
 def encode_labels(df):
+    """
+    Label encoding
+    """
     labels = df["activity"]
     encoder = preprocessing.LabelEncoder()
     encoder.fit(labels)
@@ -24,6 +27,9 @@ def encode_labels(df):
 
 
 def scale_dataset(_config, x_train, x_test):
+    """
+    Scale dataset values
+    """
     norm_type = _config['NORMALIZATION']['norm_type']
     scaler = StandardScaler()
     print("\t\t- Apply: ", norm_type)
@@ -41,6 +47,9 @@ def scale_dataset(_config, x_train, x_test):
 
 
 def data_treatment(_config, df):
+    """
+    Apply data treatment (feature extraction)
+    """
     treatment_type = _config['DATA_REPRESENTATION']['treatment_type']
 
     if treatment_type == "feat_extraction":
@@ -50,6 +59,10 @@ def data_treatment(_config, df):
 
 
 def apply_feat_extraction(_config, df):
+    """
+    Apply feature extraction to the dataset
+    """
+
     sampling_frequency = int(_config['DATA_REPRESENTATION']['sampling_frequency'])
     time_window_len = int(_config['DATA_REPRESENTATION']['time_window_len'])
     window_overlap = int(_config['DATA_REPRESENTATION']['window_overlap'])
@@ -91,12 +104,19 @@ def apply_feat_extraction(_config, df):
 
 
 def fill_missing_values_after_feat_extraction(df):
+    """
+    Fix missing values
+    """
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     df.fillna(df.mean(), inplace=True)
     return df
 
 
 def labels_windowing(labels, sampling_frequency, time_window, overlap):
+    """
+    Apply sliding window to the labels
+    """
+
     hop_size = time_window - int(sampling_frequency * overlap)
     windowed_labels = list()
 
@@ -108,10 +128,14 @@ def labels_windowing(labels, sampling_frequency, time_window, overlap):
 
 
 def do_train_test_split(_config, df):
+    """
+    Split train and test dataset
+    """
+
     test_size = float(_config['TRAINING']['test_size'])
     y = df["activity"]
     x = df.drop("activity", axis=1)
-    # todo cambiato df con x,y
+
     x_train, x_test, y_train, y_test = train_test_split(
         x,
         y,
@@ -129,6 +153,10 @@ def do_train_test_split(_config, df):
 
 
 def do_features_selection(_config, x_train, x_test):
+    """
+    Do feature selection
+    """
+
     feat_sel_type = _config['FEATURES_SELECTION']['feat_sel_type']
     print("\t\t- Apply: ", feat_sel_type)
 
@@ -143,6 +171,10 @@ def do_features_selection(_config, x_train, x_test):
 
 
 def do_balancing(_config, x_train, y_train):
+    """
+    do dataset balancing
+    """
+
     balancing_technique = _config['BALANCING']['balancing_technique']
     print("\t\t- Apply: ", balancing_technique)
 

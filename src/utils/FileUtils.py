@@ -2,10 +2,14 @@ import pandas as pd
 
 
 def load_dataset(_config):
+    """
+    read local database
+    """
+
     dataset_type = _config['DATASET']['dataset']
     file_name = ""
     if dataset_type == 'wisdm1':
-         file_name = "./data/WISDM_ar_v1.1_raw.txt"
+        file_name = "./data/WISDM_ar_v1.1_raw.txt"
     if dataset_type == 'wisdm2':
         file_name = "./data/WISDM_at_v2.0_raw.txt"
     if dataset_type == "local_preprocessed":
@@ -23,4 +27,8 @@ def load_dataset(_config):
 
 
 def save_dataset(df):
+    """
+    Save preprocessed database locally
+    """
+
     df.to_csv('./data/df_feature.csv', index=False)

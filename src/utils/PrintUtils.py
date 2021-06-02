@@ -1,7 +1,3 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-import warnings
 import warnings
 
 import matplotlib.pyplot as plt
@@ -11,6 +7,9 @@ warnings.filterwarnings("ignore")
 
 
 def print_init_stats(name, df):
+    """
+    Print stats about dataset
+    """
     print("\t\t- Shape of '", name, "':", df.shape)
 
     has_nan_values = df.isnull().values.any()
@@ -41,7 +40,7 @@ def plot_samplings_per_class(df):
 def plot_sampling_per_class_per_user(df):
     plt.figure(figsize=(12, 8))
     plt.title('Number of sampling per class collected by users')
-    sns.countplot(hue = 'activity', x='user', data = df)
+    sns.countplot(hue='activity', x='user', data=df)
     plt.show()
 
 
