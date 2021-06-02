@@ -1,17 +1,7 @@
-from sklearn.feature_selection import VarianceThreshold
-from imblearn.under_sampling import RandomUnderSampler
-from sklearn.preprocessing import MinMaxScaler
-
-from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
-from classifiers import svm, knn
-import pandas as pd
-from sklearn.manifold import TSNE
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-import numpy as np
-import argparse
 import configparser
+
+from classifiers import knn
+from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
 
 _config = configparser.ConfigParser()
 _config.read('config.ini')

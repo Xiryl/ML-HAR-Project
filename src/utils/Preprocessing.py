@@ -1,14 +1,14 @@
-from imblearn.under_sampling import RandomUnderSampler
-from sklearn import preprocessing
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.feature_selection import VarianceThreshold, SelectFromModel
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
-import tsfel as ts
 import warnings
-from scipy import stats
+
 import numpy as np
 import pandas as pd
+import tsfel as ts
+from imblearn.under_sampling import RandomUnderSampler
+from scipy import stats
+from sklearn import preprocessing
+from sklearn.feature_selection import VarianceThreshold
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 
 warnings.filterwarnings("ignore")
 

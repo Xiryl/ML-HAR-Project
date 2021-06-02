@@ -1,8 +1,12 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 import warnings
+import warnings
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 warnings.filterwarnings("ignore")
 
 

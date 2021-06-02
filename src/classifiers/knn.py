@@ -8,11 +8,6 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 def knn_gs(x_train, y_train, x_test, y_test):
-    # tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
-    #                      'gamma': ['auto', 'scale'],
-    #                      'C': [1, 10, 100, 1000],
-    #                      'max_iter': [300, 500, 1000]}]
-
     tuned_parameters = [{'n_neighbors': [1, 3, 5],
                 'p': [1, 3, 5],
                 'metric': ['euclidean', 'manhattan']}]
@@ -40,11 +35,8 @@ def knn_gs(x_train, y_train, x_test, y_test):
     return
 
 
-
 def print_cmatrix(y_test, y_pred):
     cmatrix = confusion_matrix(y_test, y_pred, normalize='true')
-    # sns.heatmap(cmatrix / np.sum(cmatrix), annot=True,
-    #             fmt='.2%', cmap='Blues')
     cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix)
     cm.plot()
     plt.show()
@@ -53,7 +45,7 @@ def print_cmatrix(y_test, y_pred):
 def stats(y_test, y_pred):
     prf1 = precision_recall_fscore_support(y_test, y_pred, average='weighted')
     accuracy = accuracy_score(y_test, y_pred, normalize=True)
-    print("===== SVM ======")
+    print("===== KNN ======")
     print("-Precision: ", prf1[0].round(2), "\n-Recall:    ", prf1[1].round(2), "\n-F1:        ", prf1[2].round(2))
     print("================")
     return prf1
