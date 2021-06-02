@@ -7,16 +7,15 @@ warnings.filterwarnings("ignore")
 
 
 def print_init_stats(name, df):
-    print("Shape of '", name, "':\n", df.shape)
-    print("Head of '", name, "':\n", df.head())
+    print("\t\t- Shape of '", name, "':", df.shape)
 
     has_nan_values = df.isnull().values.any()
-    print("Has NaN '", name, "':\n", has_nan_values)
+    print("\t\t- Has NaN '", name, "':", has_nan_values)
 
     activities = df["activity"].unique()
     users = len(df["user"].unique())
-    print("qta subjects in '", name, "':\n", users)
-    print("qta activities:", activities)
+    print("\t\t- Qta subjects in '", name, "':", users)
+    print("\t\t- Qta activities in '", name, "':", activities)
 
 
 # --- Plot functions  ---

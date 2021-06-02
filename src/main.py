@@ -52,9 +52,11 @@ def run():
     if _config['DATASET']['dataset'] != 'local_preprocessed':
         # --- Print init stats  ---
         print("\t - Generating stats ...")
+        if _config['INIT']['verbose'] == "True":
+            PrintUtils.print_init_stats(_config['DATASET']['dataset'], df_data)
+
         generate_stats = _config['INIT']['generate_stats']
         if generate_stats == "True":
-            PrintUtils.print_init_stats("WISDM_v1", df_data)
             PrintUtils.plot_count_per_subject(df_data)
             PrintUtils.plot_samplings_per_class(df_data)
             PrintUtils.plot_sampling_per_class_per_user(df_data)
@@ -83,6 +85,12 @@ def run():
         print("\t - Save df_feature ...")
         FileUtils.save_dataset(df_data)
         # -----------------
+    else:
+        # --- Print init stats  ---
+        print("\t - Generating stats ...")
+        if _config['INIT']['verbose'] == "True":
+            PrintUtils.print_init_stats(_config['DATASET']['dataset'], df_data)
+        # -----------------
 
     # --- Train/Test Split  ---
     print("\t - Train/Test Split ...")
@@ -101,18 +109,18 @@ def run():
 
     # --- Data Balancing  ---
     print("\t - Data Balancing ...")
-    #x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
+    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
     # -----------------
 
-    # --- Model execution: SVM  ---
-    print("\t - Model execution: SVM ...")
-    svm.svm(x_train, y_train, x_test, y_test)
-    # -----------------
-    #
-    # # --- Model execution: KNN  ---
-    # print("\t - Model execution: KNN ...")
-    # knn.knn_gs(x_train, y_train, x_test, y_test)
+    # # --- Model execution: SVM  ---
+    # print("\t - Model execution: SVM ...")
+    # svm.svm(x_train, y_train, x_test, y_test)
     # # -----------------
+
+    # --- Model execution: KNN  ---
+    print("\t - Model execution: KNN ...")
+    knn.knn_gs(x_train, y_train, x_test, y_test)
+    # -----------------
 
 
 if __name__ == '__main__':

@@ -12,6 +12,7 @@ def apply_filter(_config, df):
     filter_low_cut = int(_config['DATA_CLEANING']['filter_low_cut'])
 
     if filter == 'none':
+        print("\t\t- Skipping")
         return df
 
     if filter == 'lowpass':
@@ -41,6 +42,8 @@ def handle_nan_values(_config, df):
     has_nan_values = df.isnull().values.any()
     if not has_nan_values:
         print("\t\t- Dataset don't have NaN values.")
+        print("\t\t- Skipping")
+        return df
 
     df.replace([math.inf, -math.inf], np.nan, inplace=True)
     if cleaning_method == 'mean':

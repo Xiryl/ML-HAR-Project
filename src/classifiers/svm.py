@@ -1,16 +1,48 @@
 from sklearn.svm import SVC
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
-
+import seaborn as sns
+import numpy as np
+from sklearn.model_selection import GridSearchCV
 
 def svm(x_train, y_train, x_test, y_test, max_iter=1000, kernel='linear'):
-    model = SVC(kernel=kernel, max_iter=max_iter)
+    model = SVC(kernel=kernel)
     model = train(model, x_train, y_train)
     predicted = predict(model, x_test)
     print_cmatrix(predicted, y_test)
     stats(predicted, y_test)
     return predicted
 
+
+def svm_gs(x_train, y_train, x_test, y_test):
+    # tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
+    #                      'gamma': ['auto', 'scale'],
+    #                      'C': [1, 10, 100, 1000],
+    #                      'max_iter': [300, 500, 1000]}]
+
+    # tuned_parameters = [{'C': [0.01, 0.1, 1, 10],
+    #             'kernel': ['linear', 'poly', 'rbf'],
+    #             'gamma': ['scale', 'auto']}]
+
+    tuned_parameters = [{'C': [0.01],
+                'kernel': ['linear']}]
+
+
+    clf = GridSearchCV(
+        SVC(), tuned_parameters, scoring='accuracy'
+    )
+    clf.fit(x_train, y_train)
+    print("Best parameters set found on development set:")
+    print()
+    print(clf.best_params_)
+
+    model = SVC()
+    model.set_params(**clf.best_params_)
+    model = train(model, x_train, y_train)
+    predicted = predict(model, x_test)
+    print_cmatrix(predicted, y_test)
+    stats(predicted, y_test)
+    return predicted
 
 def train(model, x_train, y_train):
     model.fit(x_train, y_train)
@@ -25,7 +57,8 @@ def predict(model, x_test):
 def print_cmatrix(predicted, y_test):
     cmatrix = confusion_matrix(y_test, predicted)
     print(cmatrix)
-    plt.imshow(cmatrix)
+    sns.heatmap(cmatrix / np.sum(cmatrix), annot=True,
+                fmt='.2%', cmap='Blues')
     plt.show()
     return cmatrix
 

@@ -9,6 +9,7 @@ import warnings
 from scipy import stats
 import numpy as np
 import pandas as pd
+
 warnings.filterwarnings("ignore")
 
 
@@ -16,6 +17,8 @@ def encode_labels(df):
     labels = df["activity"]
     encoder = preprocessing.LabelEncoder()
     encoder.fit(labels)
+    integer_mapping = {l: i for i, l in enumerate(encoder.classes_)}
+    print("\t\t- Mapping:", integer_mapping)
     df["activity"] = encoder.transform(labels)
     return df
 
@@ -23,6 +26,7 @@ def encode_labels(df):
 def scale_dataset(_config, x_train, x_test):
     norm_type = _config['NORMALIZATION']['norm_type']
     scaler = StandardScaler()
+    print("\t\t- Apply: ", norm_type)
 
     if norm_type == 'minmax':
         scaler = MinMaxScaler()
@@ -51,13 +55,15 @@ def apply_feat_extraction(_config, df):
     window_overlap = int(_config['DATA_REPRESENTATION']['window_overlap'])
     features_domain = _config['DATA_REPRESENTATION']['features_domain']
 
-    # x = df.drop(['activity', 'user', 'timestamp'], axis=1)
-    x = df.drop(['activity', 'timestamp'], axis=1)
+    x = df.drop(['activity', 'user', 'timestamp'], axis=1)
+    # x = df.drop(['activity', 'timestamp'], axis=1)
     y = df['activity']
 
     if features_domain == "all":
+        print("\t\t- Domain: 'all'")
         cfg = ts.get_features_by_domain()
     else:
+        print("\t\t- Domain: '", features_domain, "'")
         cfg = ts.get_features_by_domain(features_domain)
 
     tsfel_overlap = round(window_overlap / time_window_len, 3)
@@ -79,12 +85,16 @@ def apply_feat_extraction(_config, df):
     df_features = pd.DataFrame(X_features)
     df_features['activity'] = Y_features
 
+    print("\t\t- New shape: ", df_features.shape)
+
     return df_features
+
 
 def fill_missing_values_after_feat_extraction(df):
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     df.fillna(df.mean(), inplace=True)
     return df
+
 
 def labels_windowing(labels, sampling_frequency, time_window, overlap):
     hop_size = time_window - int(sampling_frequency * overlap)
@@ -119,63 +129,29 @@ def do_train_test_split(_config, df):
 
 
 def do_features_selection(_config, x_train, x_test):
-    feat_sel_type= _config['FEATURES_SELECTION']['feat_sel_type']
+    feat_sel_type = _config['FEATURES_SELECTION']['feat_sel_type']
+    print("\t\t- Apply: ", feat_sel_type)
+
     if feat_sel_type == 'variance':
         selector = VarianceThreshold()
         x_train_s = selector.fit_transform(x_train)
         x_test_s = selector.transform(x_test)
+
+        print("\t\t- New shape x_train: ", x_train_s.shape)
+        print("\t\t- New shape x_test : ", x_test_s.shape)
         return x_train_s, x_test_s
-    else:
-        clf = ExtraTreesClassifier(n_estimators=50)
-        clf = clf.fit(x_train, x_test)
-        model = SelectFromModel(clf, prefit=True)
-        x_train = model.fit_transform(x_train)
-        x_test = model.transform(x_test)
-        return x_train, x_test
 
 
 def do_balancing(_config, x_train, y_train):
     balancing_technique = _config['BALANCING']['balancing_technique']
+    print("\t\t- Apply: ", balancing_technique)
+
     if balancing_technique == 'under':
         sampler = RandomUnderSampler()
         x_train_b, y_train_b = sampler.fit_resample(x_train, y_train)
+
+        print("\t\t- New shape x_train: ", x_train_b.shape)
+        print("\t\t- New shape y_train : ", y_train_b.shape)
         return x_train_b, y_train_b
     else:
         return x_train, y_train
-
-
-# def apply_segmentation(df, sampling_frequency, time_window_size, overlap):
-#
-#     x, y = get_window(df, sampling_frequency, time_window_size, overlap)
-#     p = None
-#
-#     x_df = pd.DataFrame(x.reshape(-1, x.shape[1] * x.shape[2]))
-#     x_df['activity'] = y
-#
-#     return x_df
-#
-#
-# def get_window(df: pd.DataFrame, sampling_frequency: int, window_size: int, overlap: float):
-#     hop_size = window_size - int(sampling_frequency * overlap)
-#
-#     data = list()
-#     labels = list()
-#     patients = list()
-#
-#     x = df.drop(['activity', 'user', 'timestamp'], axis=1)
-#     y = df['activity']
-#
-#     for i in range(0, len(df) - window_size + 1, hop_size):
-#         window = list()
-#         for column in x:
-#             x_i = df[column].values[i: i + window_size]
-#             window.append(x_i)
-#
-#         # Associate a label for the current window based on mode
-#         label = stats.mode(df['activity'].values[i: i + window_size])[0][0]
-#
-#         data.append(np.array(window).T)
-#         labels.append(label)
-#
-#     return np.asarray(data), np.asarray(labels)
-#
