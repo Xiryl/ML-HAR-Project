@@ -13,19 +13,21 @@ def run_classifiers(_config, x_train, y_train, x_test, y_test):
         cfg_gamma = _config['SVM']['gamma']
         cfg_C = float(_config['SVM']['C'])
         cfg_max_iter = int(_config['SVM']['max_iter'])
-        return svm.svm(x_train, y_train, x_test, y_test, cfg_kernel, cfg_gamma, cfg_C, cfg_max_iter)
+        svm.svm(x_train, y_train, x_test, y_test, cfg_kernel, cfg_gamma, cfg_C, cfg_max_iter)
 
     if cfg_svm_gs == 'True':
         print("\t\t - Executing: SVM GS ...")
-        return svm.svm_gs(x_train, y_train, x_test, y_test)
+        svm.svm_gs(x_train, y_train, x_test, y_test)
 
     if cfg_knn == 'True':
         print("\t\t - Executing: KNN ...")
         cfg_n_neighbors = int(_config['KNN']['n_neighbors'])
         cfg_p = int(_config['KNN']['p'])
         cfg_metric = _config['KNN']['metric']
-        return knn.knn(x_train, y_train, x_test, y_test, cfg_n_neighbors, cfg_p, cfg_metric)
+        knn.knn(x_train, y_train, x_test, y_test, cfg_n_neighbors, cfg_p, cfg_metric)
 
     if cfg_knn_gs == 'True':
         print("\t\t - Executing: KNN GS ...")
-        return knn.knn_gs(x_train, y_train, x_test, y_test)
+        knn.knn_gs(x_train, y_train, x_test, y_test)
+
+    return

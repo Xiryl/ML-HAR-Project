@@ -8,7 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 def knn(x_train, y_train, x_test, y_test, n_neighbors=1, p=1, metric='euclidean'):
-    model = KNeighborsClassifier(n_neighbors, p, metric)
+    model = KNeighborsClassifier(n_neighbors=n_neighbors, p=p, metric=metric)
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
 
@@ -22,14 +22,14 @@ def knn_gs(x_train, y_train, x_test, y_test):
                 'p': [1, 3, 5],
                 'metric': ['euclidean', 'manhattan']}]
 
-    print("\t\t- Params: ", tuned_parameters)
+    print("\t\t\t- Params: ", tuned_parameters)
 
     clf = GridSearchCV(
         KNeighborsClassifier(), tuned_parameters, scoring='accuracy'
     )
     clf.fit(x_train, y_train)
 
-    print("\t\t- Best parameters set found on development set:")
+    print("\t\t\t- Best parameters set found on development set:")
     print()
     print(clf.best_params_)
 

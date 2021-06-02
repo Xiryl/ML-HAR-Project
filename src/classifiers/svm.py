@@ -7,7 +7,7 @@ from sklearn.model_selection import GridSearchCV
 
 
 def svm(x_train, y_train, x_test, y_test, kernel='linear', gamma='auto', C=0.1, max_iter=1000):
-    model = SVC(kernel, gamma, C, max_iter)
+    model = SVC(kernel=kernel, gamma=gamma, C=C, max_iter=max_iter)
     model = train(model, x_train, y_train)
     predicted = predict(model, x_test)
     print_cmatrix(predicted, y_test)
