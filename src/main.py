@@ -2,38 +2,19 @@ import configparser
 
 from classifiers import MLClassifiers
 from utils import FileUtils, Preprocessing, PrintUtils, DataCleaning
+import pandas as pd
 
 _config = configparser.ConfigParser()
 _config.read('config.ini')
+from sklearn.manifold import TSNE
 
-
-def print_config(_config):
-    generate_stats = _config['INIT']['generate_stats']
-    filter = _config['DATA_CLEANING']['filter']
-    representation_type = _config['DATA_REPRESENTATION']['treatment_type']
-
-    if generate_stats == "True":
-        print("Executing using [ generate stats ] as init phase.")
-    else:
-        print("Executing using [ no generate stats ] as init phase.")
-
-    if filter == "none":
-        print("Executing using [ no FFT filter ] as data cleaning type.")
-    else:
-        print("Executing using [ FFT filter: low ] as data cleaning type.")
-
-    print("Executing using [", representation_type, "] as data treatment type.")
-    return
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def run():
-    # --- Print running configuration  ---
-    print_config(_config)
-    # -----------------
 
-    print("-----------------")
-
-    # --- Load datasets  ---
+    # --- Load dataset  ---
     print("\t - Load Dataset ...")
     df_data = FileUtils.load_dataset(_config)
     # -----------------
@@ -57,9 +38,6 @@ def run():
         # --- Data Cleaning  ---
         print("\t - Data cleaning (fix NaN values) ...")
         df_data = DataCleaning.handle_nan_values(_config, df_data)
-
-        print("\t - Data cleaning (noise removal) ...")
-        df_data = DataCleaning.apply_filter(_config, df_data)
         # -----------------
 
         # --- Encode labels  ---
@@ -67,9 +45,19 @@ def run():
         df_data = Preprocessing.encode_labels(df_data)
         # -----------------
 
+        # # --- Data Filtering v2 ---
+        # print("\t - Data filtering (fft) v2 ...")
+        # df_data = Preprocessing.data_filtering(_config, df_data)
+        # # -----------------
+
+        # # --- Data Filtering  ---
+        # print("\t - Data cleaning (noise removal) ...")
+        # df_data = DataCleaning.apply_filter(_config, df_data)
+        # # -----------------
+
         # --- Data Treatment  ---
         print("\t - Data Treatment (feat extraction) ...")
-        df_data = Preprocessing.data_treatment(_config, df_data)
+        df_data = Preprocessing.feat_extraction(_config, df_data)
 
         print("\t - Save df_feature ...")
         FileUtils.save_dataset(df_data)
@@ -81,9 +69,27 @@ def run():
             PrintUtils.print_init_stats(_config['DATASET']['dataset'], df_data)
         # -----------------
 
+    PrintUtils.print_init_stats(_config['DATASET']['dataset'], df_data)
     # --- Train/Test Split  ---
     print("\t - Train/Test Split ...")
-    x_train, x_test, y_train, y_test = Preprocessing.do_train_test_split(_config, df_data)
+    # x_train, x_test, y_train, y_test = Preprocessing.do_train_test_split(_config, df_data)
+
+    df_test_1 = df_data.loc[df_data['user'] == 8]
+    df_test_2 = df_data.loc[df_data['user'] == 20]
+    frames = [df_test_1, df_test_2]
+    df_test = pd.concat(frames, axis=0)
+    df_train = df_data.loc[df_data['user'] != 8]
+    df_train = df_train.loc[df_train['user'] != 20]
+
+    df_train = df_train.drop('user', axis=1)
+    y_train = df_train['activity']
+    df_train = df_train.drop('activity', axis=1)
+    x_train = df_train
+
+    df_test = df_test.drop('user', axis=1)
+    y_test = df_test['activity']
+    df_test = df_test.drop('activity', axis=1)
+    x_test = df_test
     # -----------------
 
     # --- Normalization  ---
@@ -91,15 +97,20 @@ def run():
     x_train, x_test = Preprocessing.scale_dataset(_config, x_train, x_test)
     # -----------------
 
+    tsne = TSNE(random_state=42, n_components=2, verbose=1, perplexity=50, n_iter=1000).fit_transform(df_train)
+    plt.figure(figsize=(12, 8))
+    sns.scatterplot(x=tsne[:, 0], y=tsne[:, 1], hue=y_train, palette="bright")
+    plt.show()
+
     # --- Features Selection  ---
     print("\t - Features Selection ...")
     x_train, x_test = Preprocessing.do_features_selection(_config, x_train, x_test)
     # -----------------
 
-    # --- Data Balancing  ---
-    print("\t - Data Balancing ...")
-    x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
-    # -----------------
+    # # --- Data Balancing  ---
+    # print("\t - Data Balancing ...")
+    # x_train, y_train = Preprocessing.do_balancing(_config, x_train, y_train)
+    # # -----------------
 
     # --- Model execution: ML  ---
     print("\t - Model execution: ML ...")
