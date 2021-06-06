@@ -1,11 +1,12 @@
 from classifiers import svm, knn
 
 
-def run_classifiers(_config, x_train, y_train, x_test, y_test):
+def run_classifiers(_config, x_train, y_train, x_test, y_test, df_data=0):
     cfg_svm = _config['ML_CLF_EXECUTION']['svm']
     cfg_svm_gs = _config['ML_CLF_EXECUTION']['svm_gs']
     cfg_knn = _config['ML_CLF_EXECUTION']['knn']
     cfg_knn_gs = _config['ML_CLF_EXECUTION']['knn_gs']
+    cfg_knn_cv = _config['ML_CLF_EXECUTION']['knn_cv']
 
     if cfg_svm == 'True':
         print("\t\t - Executing: SVM ...")
@@ -29,5 +30,9 @@ def run_classifiers(_config, x_train, y_train, x_test, y_test):
     if cfg_knn_gs == 'True':
         print("\t\t - Executing: KNN GS ...")
         knn.knn_gs(x_train, y_train, x_test, y_test)
+
+    if cfg_knn_cv == 'True':
+        print("\t\t- Executing KNN K-Fold ...")
+        knn.knn_kfold(_config, n_neighbors=5, metric='euclidean', kfold=5, df_data=df_data)
 
     return

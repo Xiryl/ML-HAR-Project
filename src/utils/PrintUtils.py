@@ -2,6 +2,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.manifold import TSNE
 
 warnings.filterwarnings("ignore")
 
@@ -54,3 +55,10 @@ def plot_activity(activity, df):
     plt.show()
 
 # -----------------
+
+
+def plot_tsne(x_train, y_train):
+    tsne = TSNE(random_state=42, n_components=2, verbose=1, perplexity=50, n_iter=1000).fit_transform(x_train)
+    plt.figure(figsize=(12, 8))
+    sns.scatterplot(x=tsne[:, 0], y=tsne[:, 1], hue=y_train, palette="bright")
+    plt.show()

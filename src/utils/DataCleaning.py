@@ -30,38 +30,3 @@ def handle_nan_values(_config, df):
         print("\t\t- After apply '", cleaning_method, "' the dataset don't contains NaN values.")
 
     return df
-
-# def apply_filter(_config, df):
-#     """
-#     Do FFT filter to the dataset
-#     """
-#
-#     filter = _config['DATA_CLEANING']['filter']
-#     sampling_frequency = int(_config['DATA_REPRESENTATION']['sampling_frequency'])
-#     filter_order = int(_config['DATA_CLEANING']['filter_order'])
-#     filter_high_cut = int(_config['DATA_CLEANING']['filter_high_cut'])
-#     filter_low_cut = int(_config['DATA_CLEANING']['filter_low_cut'])
-#
-#     if filter == 'none':
-#         print("\t\t- Skipping")
-#         return df
-#
-#     if filter == 'lowpass':
-#         cut_off = filter_low_cut
-#
-#     if filter == 'highpass':
-#         cut_off = filter_high_cut
-#
-#     b, a = sm.signal.build_filter(frequency=20,
-#                                   sample_rate=sampling_frequency,
-#                                   filter_type=filter,
-#                                   filter_order=filter_order)
-#
-#     # df.replace([math.inf, -math.inf], np.nan, inplace=True)
-#     # df = df.reset_index(drop=True)
-#
-#     df['x-acc'] = sm.signal.filter_signal(b, a, signal=df['x-acc'].values)
-#     df['y-acc'] = sm.signal.filter_signal(b, a, signal=df['y-acc'].values)
-#     df['z-acc'] = sm.signal.filter_signal(b, a, signal=df['z-acc'].values)
-#
-#     return df
