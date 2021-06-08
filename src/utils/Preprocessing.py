@@ -135,12 +135,12 @@ def do_train_test_split(_config, df):
 
     test_size = float(_config['TRAINING']['test_size'])
     y = df["activity"]
-    x = df.drop("activity", axis=1)
+    x = df.drop(["activity", "user"], axis=1)
 
     x_train, x_test, y_train, y_test = train_test_split(
         x,
         y,
-        shuffle=False,
+        shuffle=True,
         test_size=test_size,
         random_state=28)
 
@@ -260,6 +260,7 @@ def feat_extraction(_config, df_data):
                                                    window_size=time_window_size,
                                                    overlap=tsfel_overlap,
                                                    verbose=0)
+
 
         # Handling eventual missing values from the feature extraction
         X_features = fill_missing_values_after_feat_extraction(X_features)

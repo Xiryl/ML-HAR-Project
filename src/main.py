@@ -35,11 +35,6 @@ def run():
         df_data = DataCleaning.handle_nan_values(_config, df_data)
         # -----------------
 
-        # --- Encode labels  ---
-        print("\t - Encoding labels ...")
-        df_data = Preprocessing.encode_labels(df_data)
-        # -----------------
-
         # --- Data Treatment  ---
         print("\t - Data Treatment (feat extraction) ...")
         df_data = Preprocessing.feat_extraction(_config, df_data)
@@ -54,10 +49,10 @@ def run():
         PrintUtils.print_init_stats(_config['DATASET']['dataset'], df_data)
     # -----------------
 
-    # # --- Model execution: KFOLD  ---
-    # print("\t - Model execution: KFOLD ...")
-    # MLClassifiers.run_classifiers(_config=_config, df_data=df_data, x_train=0, y_train=0, x_test=0, y_test=0)
-    # # -----------------
+    # --- Encode labels  ---
+    print("\t - Encoding labels ...")
+    df_data = Preprocessing.encode_labels(df_data)
+    # -----------------
 
     # --- Train/Test Split  ---
     print("\t - Train/Test Split ...")

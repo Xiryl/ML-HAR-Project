@@ -19,8 +19,7 @@ def svm(x_train, y_train, x_test, y_test, kernel='linear', gamma='auto', C=0.1, 
 def svm_gs(x_train, y_train, x_test, y_test):
     tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
                          'gamma': ['auto', 'scale'],
-                         'C': [1, 10, 100, 1000],
-                         'max_iter': [300, 500, 1000]}]
+                         'C': [0.01, 0.1, 1, 10]}]
 
     clf = GridSearchCV(
         SVC(), tuned_parameters, scoring='accuracy'

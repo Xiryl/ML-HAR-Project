@@ -21,13 +21,9 @@ def knn(x_train, y_train, x_test, y_test, n_neighbors=1, p=1, metric='euclidean'
 
 
 def knn_gs(x_train, y_train, x_test, y_test):
-    #tuned_parameters = [{'n_neighbors': [1, 3, 5],
-     #           'p': [1, 3, 5],
-     #           'metric': ['euclidean', 'manhattan']}]
-
-    tuned_parameters = [{'n_neighbors': [1],
-                'p': [1],
-                'metric': ['euclidean']}]
+    tuned_parameters = [{'n_neighbors': list(range(1, 11)),
+                        'p': [1, 3, 5],
+                        'metric': ['euclidean', 'manhattan', 'chebyshev', 'minkowski']}]
 
     print("\t\t\t- Params: ", tuned_parameters)
 
@@ -52,7 +48,8 @@ def knn_gs(x_train, y_train, x_test, y_test):
 
 def print_cmatrix(y_test, y_pred):
     cmatrix = confusion_matrix(y_test, y_pred, normalize='true')
-    cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix, display_labels=['downstairs', 'jogging', 'sitting', 'standing', 'upstairs', 'walking'])
+    cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix,
+                                display_labels=['downstairs', 'jogging', 'sitting', 'standing', 'upstairs', 'walking'])
     cm.plot()
     plt.title("KNN")
     plt.show()
@@ -62,13 +59,13 @@ def stats(y_test, y_pred):
     prf1 = precision_recall_fscore_support(y_test, y_pred, average='weighted')
     accuracy = accuracy_score(y_test, y_pred, normalize=True)
     print("\t\t\t===== KNN ======")
-    print("\t\t\t-Precision: ", prf1[0].round(2), "\n\t\t\t-Recall:    ", prf1[1].round(2), "\n\t\t\t-F1:        ", prf1[2].round(2), "\n\t\t\t-Accuracy:  ", accuracy.round(2))
+    print("\t\t\t-Precision: ", prf1[0].round(2), "\n\t\t\t-Recall:    ", prf1[1].round(2), "\n\t\t\t-F1:        ",
+          prf1[2].round(2), "\n\t\t\t-Accuracy:  ", accuracy.round(2))
     print("\t\t\t================")
     return prf1
 
 
 def knn_kfold(_config, df_data, n_neighbors=5, metric='euclidean', kfold=3):
-
     df_data_y = df_data['activity']
     df_data = df_data.drop('activity', axis=1)
     df_data = df_data.drop('user', axis=1)
