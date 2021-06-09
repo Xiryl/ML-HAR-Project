@@ -53,14 +53,14 @@ def print_cmatrix(y_test, y_pred):
     cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix,
                                 display_labels=['downstairs', 'jogging', 'sitting', 'standing', 'upstairs', 'walking'])
     cm.plot(colorbar=True, cmap='Blues')
-    plt.title("KNN")
+    plt.title("LDA")
     plt.show()
 
 
 def stats(y_test, y_pred):
     prf1 = precision_recall_fscore_support(y_test, y_pred, average='weighted')
     accuracy = accuracy_score(y_test, y_pred, normalize=True)
-    print("\t\t\t===== KNN ======")
+    print("\t\t\t===== LDA ======")
     print("\t\t\t-Precision: ", prf1[0].round(2), "\n\t\t\t-Recall:    ", prf1[1].round(2), "\n\t\t\t-F1:        ",
           prf1[2].round(2), "\n\t\t\t-Accuracy:  ", accuracy.round(2))
     print("\t\t\t================")
