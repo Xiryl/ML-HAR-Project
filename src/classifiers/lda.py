@@ -12,25 +12,25 @@ from utils import Preprocessing
 
 
 def lda(x_train, y_train, x_test, y_test):
-    model = LinearDiscriminantAnalysis()
+    model = LinearDiscriminantAnalysis(solver="svd", store_covariance=True, tol=0.0001)
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
 
     print_cmatrix(y_test, y_pred)
-    f1 = stats(y_test, y_pred)
-    return f1[2].round(2)
+    stats(y_test, y_pred)
+    return
 
 
 def lda_gs(x_train, y_train, x_test, y_test):
 
     tuned_parameters = [{'solver': ['svd'],
                         'store_covariance': ['True', 'False'],
-                        'tol': [0.0001, 0.001, 0.01]}]
+                        'tol': [ 0.0001, 0.001, 0.01, 0.1]}]
 
     print("\t\t\t- Params: ", tuned_parameters)
 
     clf = GridSearchCV(
-        KNeighborsClassifier(), tuned_parameters, scoring='accuracy'
+        LinearDiscriminantAnalysis(), tuned_parameters, scoring='accuracy'
     )
     clf.fit(x_train, y_train)
 
