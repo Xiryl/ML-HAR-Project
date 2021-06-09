@@ -50,7 +50,7 @@ def print_cmatrix(y_test, y_pred):
     cmatrix = confusion_matrix(y_test, y_pred, normalize='true')
     cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix,
                                 display_labels=['downstairs', 'jogging', 'sitting', 'standing', 'upstairs', 'walking'])
-    cm.plot()
+    cm.plot(colorbar=True, cmap='Blues')
     plt.title("KNN")
     plt.show()
 

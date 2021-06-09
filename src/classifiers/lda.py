@@ -1,36 +1,44 @@
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.svm import SVC
 from matplotlib import pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support, ConfusionMatrixDisplay
 import seaborn as sns
 import numpy as np
 from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import KFold
+
+from utils import Preprocessing
 
 
-def svm(x_train, y_train, x_test, y_test, kernel='linear', gamma='auto', C=0.1, max_iter=1000):
-    model = SVC(kernel=kernel, gamma=gamma, C=C)
+def lda(x_train, y_train, x_test, y_test):
+    model = LinearDiscriminantAnalysis()
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
 
     print_cmatrix(y_test, y_pred)
-    stats(y_test, y_pred)
-    return
+    f1 = stats(y_test, y_pred)
+    return f1[2].round(2)
 
 
-def svm_gs(x_train, y_train, x_test, y_test):
-    tuned_parameters = [{'kernel': ['rbf', 'linear', 'poly'],
-                         'gamma': ['auto', 'scale'],
-                         'C': [0.01, 0.1, 1, 10]}]
+def lda_gs(x_train, y_train, x_test, y_test):
+
+    tuned_parameters = [{'solver': ['svd'],
+                        'store_covariance': ['True', 'False'],
+                        'tol': [0.0001, 0.001, 0.01]}]
+
+    print("\t\t\t- Params: ", tuned_parameters)
 
     clf = GridSearchCV(
-        SVC(), tuned_parameters, scoring='accuracy'
+        KNeighborsClassifier(), tuned_parameters, scoring='accuracy'
     )
-
     clf.fit(x_train, y_train)
-    print("Best parameters set found on development set:")
+
+    print("\t\t\t- Best parameters set found on development set:")
     print()
     print(clf.best_params_)
 
-    model = SVC()
+    model = LinearDiscriminantAnalysis()
     model.set_params(**clf.best_params_)
     model.fit(x_train, y_train)
     y_pred = model.predict(x_test)
@@ -45,17 +53,16 @@ def print_cmatrix(y_test, y_pred):
     cm = ConfusionMatrixDisplay(confusion_matrix=cmatrix,
                                 display_labels=['downstairs', 'jogging', 'sitting', 'standing', 'upstairs', 'walking'])
     cm.plot(colorbar=True, cmap='Blues')
-    plt.title("SVM")
+    plt.title("KNN")
     plt.show()
 
 
 def stats(y_test, y_pred):
     prf1 = precision_recall_fscore_support(y_test, y_pred, average='weighted')
     accuracy = accuracy_score(y_test, y_pred, normalize=True)
-    print("\t\t\t===== SVM ======")
-    print("\t\t\t-Precision: ", prf1[0].round(2), "\n\t\t\t-Recall:    ", prf1[1].round(2), "\n\t\t\t-F1:        ", prf1[2].round(2), "\n\t\t\t-Accuracy:  ", accuracy.round(2))
+    print("\t\t\t===== KNN ======")
+    print("\t\t\t-Precision: ", prf1[0].round(2), "\n\t\t\t-Recall:    ", prf1[1].round(2), "\n\t\t\t-F1:        ",
+          prf1[2].round(2), "\n\t\t\t-Accuracy:  ", accuracy.round(2))
     print("\t\t\t================")
     return prf1
-
-
 

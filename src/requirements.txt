@@ -1,0 +1,9 @@
+pandas==1.2.4
+matplotlib==3.4.2
+seaborn==0.11.1
+scikit-learn==0.24.2
+numpy==1.20.3
+sensormotion==1.1.4
+tsfel==0.1.4
+imblearn==0.0
+scipy==1.6.3
